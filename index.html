@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feliz Cumpleaños Fernanda</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;500&display=swap');
+
+        :root {
+            --primary-color: #d633ff; /* Morado neón */
+            --primary-light: #ff8afb; /* Rosa claro */
+            --secondary-color: #00ff88; /* Verde neón */
+            --secondary-dark: #00b35f; /* Verde oscuro */
+            --bg-color: #050505;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            position: relative;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .container {
+            z-index: 10;
+            text-align: center;
+            position: relative;
+            animation: fadeIn 2s ease;
+            padding: 20px;
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color);
+            background: linear-gradient(to right, #ff8afb, #d633ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* =========================================
+           NUEVAS FLORES DETALLADAS EN CSS
+        ========================================= */
+        .code-flower-wrap {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto 20px;
+            /* Filtro para que todo brille */
+            filter: drop-shadow(0 0 10px var(--primary-color));
+            animation: gentle-sway 4s ease-in-out infinite alternate;
+        }
+
+        /* Tallos */
+        .stem-group {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .stem {
+            position: absolute;
+            bottom: 0;
+            background: linear-gradient(to left, var(--secondary-dark), var(--secondary-color));
+            border-radius: 10px;
+            box-shadow: 0 0 10px var(--secondary-color);
+        }
+        .stem.main { width: 12px; height: 180px; left: -6px; }
+        .stem.left { width: 8px; height: 120px; left: -50px; transform: rotate(-20deg); bottom: 10px; }
+        .stem.right { width: 8px; height: 120px; left: 40px; transform: rotate(20deg); bottom: 10px; }
+
+        /* Hojas */
+        .leaf-code {
+            position: absolute;
+            width: 60px;
+            height: 30px;
+            background: linear-gradient(45deg, var(--secondary-dark), var(--secondary-color));
+            border-radius: 0 50% 0 50%;
+            box-shadow: 0 0 5px var(--secondary-color);
+            opacity: 0.8;
+        }
+        .leaf-code.l1 { bottom: 60px; left: -40px; transform: rotate(-30deg); }
+        .leaf-code.l2 { bottom: 80px; left: 10px; transform: rotate(30deg) scaleX(-1); }
+        .leaf-code.l3 { bottom: 40px; left: 20px; transform: rotate(45deg) scaleX(-1); width: 40px; height: 20px;}
+
+        /* Cabezas de Flores */
+        .flower-head {
+            position: absolute;
+            /* animation: bloom-pulse 3s infinite ease-in-out alternate; */
+        }
+        .flower-head.main { bottom: 170px; left: 50%; }
+        .flower-head.left { bottom: 115px; left: 25%; transform: scale(0.6) rotate(-20deg); }
+        .flower-head.right { bottom: 115px; left: 75%; transform: scale(0.6) rotate(20deg); }
+
+        /* Pétalos (Usando múltiples capas para dar volumen) */
+        .petal-layer {
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+        }
+
+        .petal {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 40px;
+            height: 80px;
+            background: linear-gradient(to top, var(--primary-color), var(--primary-light));
+            border-radius: 50% 50% 0 50%; /* Forma de gota */
+            transform-origin: bottom center;
+            box-shadow: 0 0 10px rgba(214, 51, 255, 0.5);
+            opacity: 0.9;
+        }
+
+        /* Capa exterior de pétalos */
+        .layer-1 .petal { height: 90px; width: 45px; background: linear-gradient(to top, #a100c7, var(--primary-color)); }
+        .layer-1 .p1 { transform: translateX(-50%) rotate(0deg); }
+        .layer-1 .p2 { transform: translateX(-50%) rotate(45deg); }
+        .layer-1 .p3 { transform: translateX(-50%) rotate(90deg); }
+        .layer-1 .p4 { transform: translateX(-50%) rotate(135deg); }
+        .layer-1 .p5 { transform: translateX(-50%) rotate(180deg); }
+        .layer-1 .p6 { transform: translateX(-50%) rotate(225deg); }
+        .layer-1 .p7 { transform: translateX(-50%) rotate(270deg); }
+        .layer-1 .p8 { transform: translateX(-50%) rotate(315deg); }
+
+        /* Capa media */
+        .layer-2 .petal { height: 70px; width: 35px; background: linear-gradient(to top, var(--primary-color), var(--primary-light)); }
+        .layer-2 { bottom: 5px; }
+        .layer-2 .p1 { transform: translateX(-50%) rotate(22.5deg); }
+        .layer-2 .p2 { transform: translateX(-50%) rotate(67.5deg); }
+        .layer-2 .p3 { transform: translateX(-50%) rotate(112.5deg); }
+        .layer-2 .p4 { transform: translateX(-50%) rotate(157.5deg); }
+        .layer-2 .p5 { transform: translateX(-50%) rotate(202.5deg); }
+        .layer-2 .p6 { transform: translateX(-50%) rotate(247.5deg); }
+        .layer-2 .p7 { transform: translateX(-50%) rotate(292.5deg); }
+        .layer-2 .p8 { transform: translateX(-50%) rotate(337.5deg); }
+
+        /* Capa interior */
+        .layer-3 .petal { height: 50px; width: 25px; background: linear-gradient(to top, var(--primary-light), #fff); }
+        .layer-3 { bottom: 10px; }
+        .layer-3 .p1 { transform: translateX(-50%) rotate(0deg); }
+        .layer-3 .p2 { transform: translateX(-50%) rotate(90deg); }
+        .layer-3 .p3 { transform: translateX(-50%) rotate(180deg); }
+        .layer-3 .p4 { transform: translateX(-50%) rotate(270deg); }
+
+
+        /* Centro de la flor */
+        .flower-center {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, #ffff00, #ffbd00);
+            border-radius: 50%;
+            box-shadow: 0 0 15px #ffff00;
+            z-index: 10;
+        }
+
+        /* =========================================
+           FIN CSS FLORES
+        ========================================= */
+
+        .btn-open {
+            background: transparent;
+            color: #fff;
+            border: 2px solid var(--primary-color);
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 0 15px rgba(214, 51, 255, 0.3);
+            font-family: 'Poppins', sans-serif;
+            margin-top: 10px;
+        }
+
+        .btn-open:hover {
+            background: var(--primary-color);
+            box-shadow: 0 0 30px var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        /* Carta */
+        .card-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.5s ease;
+            z-index: 100;
+        }
+
+        .card-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .card {
+            background: white;
+            color: #333;
+            width: 90%;
+            max-width: 450px;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            transform: translateY(100px);
+            transition: 0.5s ease;
+            position: relative;
+            box-shadow: 0 0 50px rgba(255,255,255,0.2);
+        }
+
+        .card-overlay.active .card {
+            transform: translateY(0);
+        }
+
+        .card-img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid var(--primary-color);
+            margin-bottom: 15px;
+            box-shadow: 0 0 15px rgba(214, 51, 255, 0.4);
+        }
+
+        .card h2 {
+            font-family: 'Dancing Script', cursive;
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: #555;
+        }
+
+        .btn-close {
+            background: var(--bg-color);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .btn-close:hover {
+            background: var(--primary-color);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes gentle-sway {
+            0% { transform: rotate(-2deg); }
+            100% { transform: rotate(2deg); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="fireflies"></canvas>
+
+    <div class="container">
+        <h1>Feliz Cumpleaños Fernanda</h1>
+        
+        <div class="code-flower-wrap">
+            <div class="stem-group">
+                <div class="stem main"></div>
+                <div class="stem left"></div>
+                <div class="stem right"></div>
+                <div class="leaf-code l1"></div>
+                <div class="leaf-code l2"></div>
+                <div class="leaf-code l3"></div>
+            </div>
+
+            <div class="flower-head main">
+                <div class="petal-layer layer-1">
+                    <div class="petal p1"></div><div class="petal p2"></div><div class="petal p3"></div><div class="petal p4"></div>
+                    <div class="petal p5"></div><div class="petal p6"></div><div class="petal p7"></div><div class="petal p8"></div>
+                </div>
+                <div class="petal-layer layer-2">
+                    <div class="petal p1"></div><div class="petal p2"></div><div class="petal p3"></div><div class="petal p4"></div>
+                    <div class="petal p5"></div><div class="petal p6"></div><div class="petal p7"></div><div class="petal p8"></div>
+                </div>
+                <div class="petal-layer layer-3">
+                    <div class="petal p1"></div><div class="petal p2"></div><div class="petal p3"></div><div class="petal p4"></div>
+                </div>
+                <div class="flower-center"></div>
+            </div>
+
+             <div class="flower-head left">
+                <div class="petal-layer layer-1">
+                    <div class="petal p1"></div><div class="petal p2"></div><div class="petal p3"></div>
+                    <div class="petal p7"></div><div class="petal p8"></div>
+                </div>
+                 <div class="flower-center"></div>
+            </div>
+
+             <div class="flower-head right">
+                <div class="petal-layer layer-1">
+                    <div class="petal p1"></div><div class="petal p2"></div><div class="petal p8"></div>
+                </div>
+                 <div class="flower-center"></div>
+            </div>
+        </div>
+        <p style="margin-bottom: 10px; font-weight: 300; font-size: 1.1rem;">Estas flores brillantes son para ti</p>
+        <button class="btn-open" onclick="openCard()">💌 Abrir Carta</button>
+    </div>
+
+    <div class="card-overlay" id="overlay">
+        <div class="card">
+            <img src="Fotoo.jpg" alt="Foto especial" class="card-img">
+            
+            <h2>Para Fernanda</h2>
+            <p>
+                ¡Feliz cumpleaños! Que hoy y siempre brilles con luz propia.
+                He creado este pequeño detalle para recordarte lo especial que eres.
+                Espero que este nuevo año esté lleno de alegrías.
+                <br><br>
+                Que el futuro te depare grandes éxitos y que cada paso que des te acerque más a tus sueños. ¡Confía en ti y sigue adelante con esa misma pasión!
+                <br><br>
+                <b>Ya nos veremos para tomar un vinito. 🥴🍷</b>
+                <br><br>
+                ¡Pásala increíble!
+            </p>
+            <button class="btn-close" onclick="closeCard()">Cerrar</button>
+        </div>
+    </div>
+
+    <script>
+        function openCard() {
+            document.getElementById('overlay').classList.add('active');
+        }
+
+        function closeCard() {
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        const canvas = document.getElementById('fireflies');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = [];
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = Math.random() * 1 - 0.5;
+                this.color = `rgba(${Math.random() * 100 + 155}, ${Math.random() * 255}, 155, ${Math.random() * 0.5 + 0.1})`;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.size > 0.2) this.size -= 0.01;
+                else this.size = Math.random() * 3;
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            for (let i = 0; i < 50; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
